@@ -11,7 +11,7 @@ DIRECTORY=$(dirname $1)
 FILE=$(basename $1)
 
 if [ ! -d $DIRECTORY ]; then
-    mkdir $DIRECTORY
+    mkdir -p $DIRECTORY
 fi
 
 if [ ! -d $DIRECTORY ]; then
