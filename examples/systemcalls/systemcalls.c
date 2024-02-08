@@ -26,9 +26,11 @@ bool do_system(const char *cmd)
     int result = system(cmd);
     printf(".......system command result = %d\n", result);
     if(result == -1){
+        printf("--------------------RETURNING FALSE!\n");
         return false;
     }
 
+    printf("--------------------RETURNING TRUE!\n");
     return true;
 }
 
@@ -87,26 +89,26 @@ bool do_exec(int count, ...)
         // status = execv(command[0], &command[1]);
         status = execv(command[0], command);	// https://stackoverflow.com/questions/33813944/no-such-file-or-directory-when-using-execv
         if(status == -1){
-            //printf("--------------------RETURNING FALSE!\n");
+            printf("--------------------RETURNING FALSE!\n");
             return false;
         }
     }
     else if(pid > 0){	// if parent, pid is the child's pid
         pid = waitpid(pid, &status, 0);
         if((status == -1) || (pid == -1)){
-            //printf("--------------------RETURNING FALSE!\n");
+            printf("--------------------RETURNING FALSE!\n");
     	    return false;
     	}
     }
     if(pid < 0){
     	// error in fork
-    	//printf("--------------------RETURNING FALSE!\n");
+    	printf("--------------------RETURNING FALSE!\n");
     	return false;
     }
 
     va_end(args);
     
-    //printf("--------------------RETURNING TRUE!\n");
+    printf("--------------------RETURNING TRUE!\n");
 
     return true;
 
@@ -194,9 +196,11 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     va_end(args);
 
     if(status == -1){
+        printf("--------------------RETURNING FALSE!\n");
         return false;
     }
     else{
+        printf("--------------------RETURNING TRUE!\n");
         return true;
     }
 
