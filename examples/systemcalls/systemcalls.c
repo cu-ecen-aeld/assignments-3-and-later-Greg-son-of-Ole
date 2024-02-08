@@ -1,4 +1,10 @@
 #include "systemcalls.h"
+#include <fcntl.h>	// GBO
+#include <stdlib.h>	// GBO
+#include <unistd.h>	// GBO
+#include <sys/types.h>	// GBO
+#include <sys/wait.h>	// GBO
+#include <string.h>
 
 /**
  * @param cmd the command to execute with system()
@@ -16,6 +22,12 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+    printf(".......system command = %s\n", cmd);
+    int result = system(cmd);
+    printf(".......system command result = %d\n", result);
+    if(result == -1){
+        return false;
+    }
 
     return true;
 }
@@ -43,6 +55,7 @@ bool do_exec(int count, ...)
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
+        printf(".......arg[%d] = %s\n", i, command[i]);
     }
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
@@ -59,9 +72,44 @@ bool do_exec(int count, ...)
  *
 */
 
+    //if(strcmp(command[0], "echo") != 0){
+    //	return false;
+    //}
+
+
+    // https://percona.community/blog/2021/01/04/fork-exec-wait-and-exit/
+    int pid, status;
+    fflush(stdout);
+    pid = fork();
+    //printf("--------------------PID = %d\n", getpid());
+    if(pid == 0){	// if child, pid will be 0
+        //printf("--------------------file = %s\n", command[0]);
+        // status = execv(command[0], &command[1]);
+        status = execv(command[0], command);	// https://stackoverflow.com/questions/33813944/no-such-file-or-directory-when-using-execv
+        if(status == -1){
+            //printf("--------------------RETURNING FALSE!\n");
+            return false;
+        }
+    }
+    else if(pid > 0){	// if parent, pid is the child's pid
+        pid = waitpid(pid, &status, 0);
+        if((status == -1) || (pid == -1)){
+            //printf("--------------------RETURNING FALSE!\n");
+    	    return false;
+    	}
+    }
+    if(pid < 0){
+    	// error in fork
+    	//printf("--------------------RETURNING FALSE!\n");
+    	return false;
+    }
+
     va_end(args);
+    
+    //printf("--------------------RETURNING TRUE!\n");
 
     return true;
+
 }
 
 /**
@@ -78,6 +126,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
+        printf("*******arg[%d] = %s\n", i, command[i]);
     }
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
@@ -93,7 +142,64 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *
 */
 
+    int fd, pid, status;
+    
+    printf("--------------------Stdout file = %s\n", outputfile);
+    
+    // open file to direct stdout into
+    fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 0644);
+    if(fd < 0){
+        perror("open");
+        // abort();
+        //return false;
+        status = -1;
+    } 
+    switch (pid = fork()) {
+        case -1:	// error creating fork
+            perror("fork");
+            //abort();
+            //return false;
+            status = -1;
+            break;
+        case 0:	// the child pid will always be 0
+            if(dup2(fd, 1) < 0){
+            	perror("dup2");
+            	//abort();
+            	//printf("--------------------RETURNING FALSE!\n");
+            	//return false;
+            	status = -1;
+            	break;
+            }
+            close(fd);
+            status = execv(command[0], command);	// https://stackoverflow.com/questions/33813944/no-such-file-or-directory-when-using-execv
+            perror("execvp");
+            // abort();
+            //printf("--------------------RETURNING FALSE!\n");
+            //return false;
+            status = -1;
+            break;
+        default:	// the parent
+            close(fd);
+            /* do whatever the parent wants to do. */
+            pid = waitpid(pid, &status, 0);
+            if((status == -1) || (pid == -1)){
+                //printf("--------------------RETURNING FALSE!\n");
+    	        //return false;
+    	        status = -1;
+    	    }
+    }
+    
+    close(fd);   
+       
     va_end(args);
 
-    return true;
+    if(status == -1){
+        return false;
+    }
+    else{
+        return true;
+    }
+
+    //return true;
+
 }
