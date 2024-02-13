@@ -112,7 +112,7 @@ ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "Shared library"
     
     #cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
     
-    cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libm.so.6 "$OUTDIR"/rootfs/lib64
+    #???cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libm.so.6 "$OUTDIR"/rootfs/lib64
     cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libresolv.so.2 "$OUTDIR"/rootfs/lib64
     cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libc.so.6 "$OUTDIR"/rootfs/lib64
     
