@@ -57,7 +57,7 @@ bool do_exec(int count, ...)
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
-        //printf(".......arg[%d] = %s\n", i, command[i]);
+        printf(".......arg[%d] = %s\n", i, command[i]);
     }
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
@@ -79,9 +79,9 @@ bool do_exec(int count, ...)
     // code to pass automated test since "echo" is a shell builtin
     //if(strcmp(command[0], "echo") == 0){
     if(strstr(command[0], "/") == NULL){
-    	for(i=0; i<count; i++){
-        	printf(".......arg[%d] = %s\n", i, command[i]);
-        }
+    	//for(i=0; i<count; i++){
+        //	printf(".......arg[%d] = %s\n", i, command[i]);
+        //}
         printf("*******************RETURNING FALSE!\n");
         result = false;
     	return false;
@@ -134,7 +134,9 @@ bool do_exec(int count, ...)
     va_end(args);
     }	// GBO 2/14/24
     
-    //printf("--------------------RETURNING TRUE!\n");
+    if(result){
+        printf("--------------------RETURNING TRUE!\n");
+    }
 
     //return true;
     return result;
