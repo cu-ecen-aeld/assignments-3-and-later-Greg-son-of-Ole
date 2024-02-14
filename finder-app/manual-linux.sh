@@ -37,15 +37,15 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     git checkout ${KERNEL_VERSION}
 
     # TODO: Add your kernel build steps here
-    #make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper
-    ## configure for our board
-    #make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} defconfig
-    ## build kernel image
-    #make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} all
+    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper
+    # configure for our board
+    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} defconfig
+    # build kernel image
+    make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} all
     
     # make -j4 ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- mrproper defconfig all
     
-    make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper defconfig all
+    # 7/14 make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper defconfig all
     # make -j4 ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- mrproper defconfig all
     # make -j4 ARCH="$ARCH" CROSS_COMPILE="$CROSS_COMPILE" mrproper defconfig all
    
@@ -112,7 +112,8 @@ ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "Shared library"
     
     #cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
     
-    #???cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libm.so.6 "$OUTDIR"/rootfs/lib64
+    # runner fails here saying... cp: cannot stat '/opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libresolv.so.2': No such file or directory ... on whatever file I put first
+    cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libm.so.6 "$OUTDIR"/rootfs/lib64
     cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libresolv.so.2 "$OUTDIR"/rootfs/lib64
     cp /opt/gcc-arm-none/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc/lib64/libc.so.6 "$OUTDIR"/rootfs/lib64
     
