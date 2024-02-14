@@ -75,6 +75,7 @@ bool do_exec(int count, ...)
  *
 */
 
+    bool result = true;
     // code to pass automated test since "echo" is a shell builtin
     //if(strcmp(command[0], "echo") == 0){
     if(strstr(command[0], "/") == NULL){
@@ -82,12 +83,13 @@ bool do_exec(int count, ...)
         	printf(".......arg[%d] = %s\n", i, command[i]);
         }
         printf("*******************RETURNING FALSE!\n");
+        result = false;
     	return false;
     }
     
     
 
-
+    if(result == true){
     // https://percona.community/blog/2021/01/04/fork-exec-wait-and-exit/
     int pid, status;
     fflush(stdout);
@@ -103,6 +105,7 @@ bool do_exec(int count, ...)
                 printf(".......arg[%d] = %s\n", i, command[i]);
     	    }
             printf("--------------------RETURNING FALSE!\n");
+            result = false;
             return false;
         }
     }
@@ -114,6 +117,7 @@ bool do_exec(int count, ...)
                 printf(".......arg[%d] = %s\n", i, command[i]);
             }
             printf("--------------------RETURNING FALSE!\n");
+            result = false;
     	    return false;
     	}
     }
@@ -123,14 +127,17 @@ bool do_exec(int count, ...)
         	printf(".......arg[%d] = %s\n", i, command[i]);
         }
     	printf("--------------------FORK ERROR - RETURNING FALSE!\n");
+    	result = false;
     	return false;
     }
 
     va_end(args);
+    }	// GBO 2/14/24
     
-    printf("--------------------RETURNING TRUE!\n");
+    //printf("--------------------RETURNING TRUE!\n");
 
-    return true;
+    //return true;
+    return result;
 
 }
 
