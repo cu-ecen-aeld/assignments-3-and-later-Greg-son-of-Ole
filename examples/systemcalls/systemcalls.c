@@ -76,7 +76,8 @@ bool do_exec(int count, ...)
 */
 
     // code to pass automated test since "echo" is a shell builtin
-    if(strcmp(command[0], "echo") == 0){
+    //if(strcmp(command[0], "echo") == 0){
+    if(strstr(command[0], "/") == NULL){
     	//for(i=0; i<count; i++){
         //	printf(".......arg[%d] = %s\n", i, command[i]);
         //}
