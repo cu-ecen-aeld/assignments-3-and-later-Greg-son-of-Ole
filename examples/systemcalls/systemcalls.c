@@ -78,10 +78,10 @@ bool do_exec(int count, ...)
     // code to pass automated test since "echo" is a shell builtin
     //if(strcmp(command[0], "echo") == 0){
     if(strstr(command[0], "/") == NULL){
-    	//for(i=0; i<count; i++){
-        //	printf(".......arg[%d] = %s\n", i, command[i]);
-        //}
-        //printf("*******************RETURNING FALSE!\n");
+    	for(i=0; i<count; i++){
+        	printf(".......arg[%d] = %s\n", i, command[i]);
+        }
+        printf("*******************RETURNING FALSE!\n");
     	return false;
     }
     
@@ -98,37 +98,37 @@ bool do_exec(int count, ...)
         // status = execv(command[0], &command[1]);
         status = execv(command[0], command);	// https://stackoverflow.com/questions/33813944/no-such-file-or-directory-when-using-execv
         if(status == -1){
-            //printf("--------------------CHILD\n");
-            //for(i=0; i<count; i++){
-            //    printf(".......arg[%d] = %s\n", i, command[i]);
-    	    //}
-            //printf("--------------------RETURNING FALSE!\n");
+            printf("--------------------CHILD\n");
+            for(i=0; i<count; i++){
+                printf(".......arg[%d] = %s\n", i, command[i]);
+    	    }
+            printf("--------------------RETURNING FALSE!\n");
             return false;
         }
     }
     else if(pid > 0){	// if parent, pid is the child's pid
         pid = waitpid(pid, &status, 0);
         if((status == -1) || (pid == -1)){
-            //printf("--------------------PARENT\n");
-            //for(i=0; i<count; i++){
-            //    printf(".......arg[%d] = %s\n", i, command[i]);
-            //}
-            //printf("--------------------RETURNING FALSE!\n");
+            printf("--------------------PARENT\n");
+            for(i=0; i<count; i++){
+                printf(".......arg[%d] = %s\n", i, command[i]);
+            }
+            printf("--------------------RETURNING FALSE!\n");
     	    return false;
     	}
     }
     if(pid < 0){
         // error in fork
-        //for(i=0; i<count; i++){
-        //	printf(".......arg[%d] = %s\n", i, command[i]);
-        //}
-    	//printf("--------------------RETURNING FALSE!\n");
+        for(i=0; i<count; i++){
+        	printf(".......arg[%d] = %s\n", i, command[i]);
+        }
+    	printf("--------------------FORK ERROR - RETURNING FALSE!\n");
     	return false;
     }
 
     va_end(args);
     
-    //printf("--------------------RETURNING TRUE!\n");
+    printf("--------------------RETURNING TRUE!\n");
 
     return true;
 
